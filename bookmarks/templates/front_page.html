@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
-  <p>
-    Hello World
-  </p>
+  <form action="/add_bookmark/" method="post">
+    <label for="short">Short</label>
+    <input type="text" name="short" value="">
+    <label for="link">Link</label>
+    <input type="text" name="link" value="">
+    <input type="submit" value="Submit">
+  </form>
 {% endblock %}
