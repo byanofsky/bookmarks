@@ -7,3 +7,8 @@ app.config.update(dict(
     USERNAME='admin',
     PASSWORD='default'
 ))
+
+
+@app.route('/', methods=['GET'])
+def front_page():
+    return 'Hello, World!'
