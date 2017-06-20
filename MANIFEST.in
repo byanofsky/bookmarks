@@ -1,0 +1,2 @@
+graft bookmarks/templates
+graft bookmarks/static
