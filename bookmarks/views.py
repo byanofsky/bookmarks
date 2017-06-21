@@ -1,8 +1,5 @@
-from flask import Flask, render_template, request
-
-app = Flask(__name__, instance_relative_config=True)
-app.config.from_object('bookmarks.default_settings')
-app.config.from_pyfile('settings.cfg', silent=True)
+from bookmarks import app
+from flask import render_template, request
 
 
 @app.route('/', methods=['GET'])
