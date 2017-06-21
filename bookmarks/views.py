@@ -1,7 +1,7 @@
 from bookmarks import app
 from flask import flash, render_template, request, redirect, url_for
 from bookmarks.database import db_session
-from bookmarks.models.user import User
+from bookmarks.models import User
 
 
 @app.teardown_appcontext
