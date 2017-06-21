@@ -1,7 +1,7 @@
 from bookmarks import app
 from flask import flash, render_template, request, redirect, url_for
 from bookmarks.database import db_session
-from bookmarks.models import User
+from bookmarks.models import User, Bookmark
 
 
 @app.teardown_appcontext
@@ -19,9 +19,12 @@ def add_bookmark():
     if request.method == 'POST':
         short = request.form['short']
         link = request.form['link']
+        b = Bookmark(short, link, user_id=1)
+        db_session.add(b)
+        db_session.commit()
         flash('Successfully added {} {}'.format(short, link),
               category='info')
-        return redirect(url_for('front_page'), 303)
+        return redirect(url_for('add_bookmark'), 303)
     else:
         return render_template('add_bookmark.html')
 

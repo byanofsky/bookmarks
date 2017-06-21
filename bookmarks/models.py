@@ -32,10 +32,11 @@ class Bookmark(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User", back_populates="bookmarks")
 
-    def __init__(self, short, link):
+    def __init__(self, short, link, user_id):
         self.short = short
         self.link = link
         self.hits = 0
+        self.user_id = user_id
 
     def __repr__(self):
         return '<Bookmark %r>' % (self.short)
