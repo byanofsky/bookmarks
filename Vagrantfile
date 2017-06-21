@@ -71,6 +71,10 @@ Vagrant.configure("2") do |config|
     sudo apt-get install -y libapache2-mod-wsgi
     # cd /var/www
     # mkdir bookmarks
+    sudo apt-get install -y python3-dev
+    sudo apt-get install -y build-essential
     sudo apt-get install -y virtualenv
+
+    sudo apt-get install -y libmysqlclient-dev
   SHELL
 end
