@@ -12,7 +12,7 @@ class User(Base):
 
     bookmarks = relationship("Bookmark", back_populates="user")
 
-    def __init__(self, name=None, username=None, email=None):
+    def __init__(self, username=None, name=None, email=None):
         self.username = username
         self.name = name
         self.email = email
