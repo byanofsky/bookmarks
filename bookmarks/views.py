@@ -1,5 +1,5 @@
 from bookmarks import app
-from flask import flash, render_template, request, redirect, url_for
+from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
 
@@ -44,3 +44,12 @@ def register_user():
         return redirect(url_for('register_user'), 303)
     else:
         return render_template('register_user.html')
+
+
+@app.route('/<string:short>', methods=['GET'])
+def get_bookmark(short):
+    if len(short) == 6:
+        b = Bookmark.query.filter(Bookmark.short == short).first()
+        if b is not None:
+            return b.link
+    abort(404)
