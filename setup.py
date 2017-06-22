@@ -7,6 +7,7 @@ setup(
     install_requires=[
         'Flask',
         'SQLalchemy',
-        'mysqlclient'
+        'mysqlclient',
+        'Flask-Bcrypt'
     ],
 )

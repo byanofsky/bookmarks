@@ -41,7 +41,8 @@ def register_user():
         username = request.form['username']
         name = request.form['name']
         email = request.form['email']
-        u = User(username, name, email)
+        password = request.form['password']
+        u = User(username, name, email, password)
         db_session.add(u)
         db_session.commit()
         flash('Successfully registered {} {} {}'.format(username, name, email),
