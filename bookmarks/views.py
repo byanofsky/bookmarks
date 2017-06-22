@@ -53,6 +53,27 @@ def register_user():
         return render_template('register_user.html')
 
 
+@app.route('/login_user/', methods=['GET', 'POST'])
+def login_user():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        u = User.query.filter(User.username == username).first()
+        if u is not None:
+            if u.check_password(password):
+                flash('Successfully logged in {}'.format(username),
+                      category='info')
+                return redirect(url_for('login_user'), 303)
+            else:
+                flash('Password incorrect')
+        else:
+            flash('User does not exist')
+        return redirect(url_for('login_user'))
+    else:
+        return render_template('login_user.html')
+
+
+
 @app.route('/<string:short>', methods=['GET'])
 def get_bookmark(short):
     if len(short) == 6:
