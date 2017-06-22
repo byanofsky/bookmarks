@@ -24,6 +24,9 @@ class User(Base):
     def __repr__(self):
         return '<User %r>' % (self.name)
 
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.pw_hash, password)
+
 
 class Bookmark(Base):
     __tablename__ = 'bookmark'
