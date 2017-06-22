@@ -20,7 +20,7 @@ def add_bookmark():
     if request.method == 'POST':
         short = request.form['short']
         link = request.form['link']
-        b = Bookmark(short, link, user_id=1)
+        b = Bookmark(short, link, user_id=4)
         db_session.add(b)
         db_session.commit()
         flash('Successfully added {} {}'.format(short, link),
@@ -79,5 +79,8 @@ def get_bookmark(short):
     if len(short) == 6:
         b = Bookmark.query.filter(Bookmark.short == short).first()
         if b is not None:
-            return b.link
+            b.hits += 1
+            db_session.add(b)
+            db_session.commit()
+            return redirect(b.link)
     abort(404)
