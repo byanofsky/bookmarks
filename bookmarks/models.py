@@ -22,7 +22,7 @@ class User(Base):
         self.pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def __repr__(self):
-        return '<User %r>' % (self.name)
+        return '<User %r>' % (self.username)
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.pw_hash, password)
