@@ -2,7 +2,7 @@
 {% block body %}
   <form action="/add_bookmark/" method="post">
     <label for="short">Short</label>
-    <input type="text" name="short" value="">
+    <input type="text" name="short" value="{{ short }}">
     <label for="link">Link</label>
     <input type="text" name="link" value="">
     <input type="submit" value="Submit">

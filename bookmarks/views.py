@@ -2,6 +2,7 @@ from bookmarks import app
 from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
+from bookmarks.modules.hex_gen import hex_gen
 
 
 @app.teardown_appcontext
@@ -26,7 +27,12 @@ def add_bookmark():
               category='info')
         return redirect(url_for('add_bookmark'), 303)
     else:
-        return render_template('add_bookmark.html')
+        # Generate a possible short
+        short = hex_gen()
+        # If it exists, keep regenerating
+        while Bookmark.query.filter(Bookmark.short == short).first() is not None:
+            short = hex_gen()
+        return render_template('add_bookmark.html', short=short)
 
 
 @app.route('/register_user/', methods=['GET', 'POST'])
