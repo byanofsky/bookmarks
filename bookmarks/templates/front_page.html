@@ -6,6 +6,7 @@
       <a href="{{ url_for('front_page') }}{{ b.short }}"
          target="_blank">{{ b.short }}</a>
       | {{ b.link }}
+      | {{ b.hits }}
       | {{ b.user.username }}
     </li>
     {% endfor %}
