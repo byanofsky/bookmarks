@@ -27,11 +27,12 @@ def front_page():
 
 
 @app.route('/add_bookmark/', methods=['GET', 'POST'])
+@flask_login.login_required
 def add_bookmark():
     if request.method == 'POST':
         short = request.form['short']
         link = request.form['link']
-        b = Bookmark(short, link, user_id=4)
+        b = Bookmark(short, link, user_id=flask_login.current_user.id)
         db_session.add(b)
         db_session.commit()
         flash('Successfully added {} {}'.format(short, link),
