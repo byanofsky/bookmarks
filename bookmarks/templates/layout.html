@@ -16,6 +16,14 @@
         </ul>
       {% endif %}
     {% endwith %}
+    <div class="nav">
+      <ul>
+        <li><a href="{{ url_for('front_page') }}">Home</a></li>
+        <li><a href="{{ url_for('login_user') }}">Login</a></li>
+        <li><a href="{{ url_for('logout_user') }}">Logout</a></li>
+        <li><a href="{{ url_for('add_bookmark') }}">Create</a></li>
+      </ul>
+    </div>
     {% block body %}{% endblock %}
   </body>
 </html>
