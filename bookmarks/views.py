@@ -89,10 +89,15 @@ def login_user():
         return render_template('login_user.html')
 
 
-@app.route('/logout_user/')
+@app.route('/logout_user/', methods=['GET', 'POST'])
 def logout_user():
-    flask_login.logout_user()
-    return 'logged out'
+    if request.method == 'POST':
+        flask_login.logout_user()
+        flash('Successfully logged out',
+              category='info')
+        return redirect(url_for('front_page'), 303)
+    else:
+        return render_template('logout_user.html')
 
 
 @app.route('/<string:b_id>', methods=['GET'])
