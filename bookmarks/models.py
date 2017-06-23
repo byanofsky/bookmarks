@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.orm import relationship
 from bookmarks.database import Base
-from bookmarks import bcrypt
 
 
 class User(Base):
@@ -15,17 +14,14 @@ class User(Base):
 
     bookmarks = relationship("Bookmark", back_populates="user")
 
-    def __init__(self, username, name, email, password):
+    def __init__(self, username, name, email, pw_hash):
         self.username = username
         self.name = name
         self.email = email
-        self.pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.pw_hash = pw_hash
 
     def __repr__(self):
         return '<User %r>' % (self.username)
-
-    def check_password(self, password):
-        return bcrypt.check_password_hash(self.pw_hash, password)
 
 
 class Bookmark(Base):

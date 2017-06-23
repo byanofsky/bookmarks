@@ -1,4 +1,4 @@
-from bookmarks import app, login_manager
+from bookmarks import app, bcrypt, login_manager
 from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
@@ -54,7 +54,8 @@ def register_user():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        u = User(username, name, email, password)
+        pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+        u = User(username, name, email, pw_hash)
         db_session.add(u)
         db_session.commit()
         flash('Successfully registered {} {} {}'.format(username, name, email),
@@ -72,7 +73,7 @@ def login_user():
         password = request.form['password']
         u = User.query.filter(User.username == username).first()
         if u is not None:
-            if u.check_password(password):
+            if bcrypt.check_password_hash(u.pw_hash, password):
                 user = flask_login.UserMixin()
                 user.id = u.id
                 flask_login.login_user(user)
