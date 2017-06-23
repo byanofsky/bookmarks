@@ -1,13 +1,23 @@
-from bookmarks import app
+from bookmarks import app, login_manager
 from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
 from bookmarks.modules.hex_gen import hex_gen
+import flask_login
 
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db_session.remove()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    if not User.query.filter(User.id == user_id).first():
+        return
+    user = flask_login.UserMixin()
+    user.id = user_id
+    return user
 
 
 @app.route('/', methods=['GET'])
@@ -62,6 +72,9 @@ def login_user():
         u = User.query.filter(User.username == username).first()
         if u is not None:
             if u.check_password(password):
+                user = flask_login.UserMixin()
+                user.id = u.id
+                flask_login.login_user(user)
                 flash('Successfully logged in {}'.format(username),
                       category='info')
                 return redirect(url_for('login_user'), 303)
@@ -73,6 +86,11 @@ def login_user():
     else:
         return render_template('login_user.html')
 
+
+@app.route('/logout_user/')
+def logout_user():
+    flask_login.logout_user()
+    return 'logged out'
 
 
 @app.route('/<string:short>', methods=['GET'])
