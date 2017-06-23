@@ -30,19 +30,18 @@ class User(Base):
 
 class Bookmark(Base):
     __tablename__ = 'bookmark'
-    id = Column(Integer, primary_key=True)
-    short = Column(String(6), unique=True, nullable=False)
+    id = Column(String(6), primary_key=True, unique=True, nullable=False)
     link = Column(Text, nullable=False)
     hits = Column(BIGINT(unsigned=True))
 
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User", back_populates="bookmarks")
 
-    def __init__(self, short, link, user_id):
-        self.short = short
+    def __init__(self, id, link, user_id):
+        self.id = id
         self.link = link
         self.hits = 0
         self.user_id = user_id
 
     def __repr__(self):
-        return '<Bookmark %r>' % (self.short)
+        return '<Bookmark %r>' % (self.id)

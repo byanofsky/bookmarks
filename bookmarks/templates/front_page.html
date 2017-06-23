@@ -3,8 +3,8 @@
   <ul>
     {% for b in bookmarks %}
     <li>
-      <a href="{{ url_for('front_page') }}{{ b.short }}"
-         target="_blank">{{ b.short }}</a>
+      <a href="{{ url_for('front_page') }}{{ b.id }}"
+         target="_blank">{{ b.id }}</a>
       | {{ b.link }}
       | {{ b.hits }}
       | {{ b.user.username }}

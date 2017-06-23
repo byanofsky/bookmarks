@@ -30,21 +30,21 @@ def front_page():
 @flask_login.login_required
 def add_bookmark():
     if request.method == 'POST':
-        short = request.form['short']
+        b_id = request.form['b_id']
         link = request.form['link']
-        b = Bookmark(short, link, user_id=flask_login.current_user.id)
+        b = Bookmark(b_id, link, user_id=flask_login.current_user.id)
         db_session.add(b)
         db_session.commit()
-        flash('Successfully added {} {}'.format(short, link),
+        flash('Successfully added {} {}'.format(b_id, link),
               category='info')
         return redirect(url_for('add_bookmark'), 303)
     else:
-        # Generate a possible short
-        short = hex_gen()
+        # Generate a possible id
+        b_id = hex_gen()
         # If it exists, keep regenerating
-        while Bookmark.query.filter(Bookmark.short == short).first() is not None:
-            short = hex_gen()
-        return render_template('add_bookmark.html', short=short)
+        while Bookmark.query.filter(Bookmark.id == b_id).first() is not None:
+            b_id = hex_gen()
+        return render_template('add_bookmark.html', b_id=b_id)
 
 
 @app.route('/register_user/', methods=['GET', 'POST'])
@@ -94,10 +94,10 @@ def logout_user():
     return 'logged out'
 
 
-@app.route('/<string:short>', methods=['GET'])
-def get_bookmark(short):
-    if len(short) == 6:
-        b = Bookmark.query.filter(Bookmark.short == short).first()
+@app.route('/<string:b_id>', methods=['GET'])
+def get_bookmark(b_id):
+    if len(b_id) == 6:
+        b = Bookmark.query.filter(Bookmark.id == b_id).first()
         if b is not None:
             b.hits += 1
             db_session.add(b)
