@@ -102,5 +102,5 @@ def get_bookmark(short):
             b.hits += 1
             db_session.add(b)
             db_session.commit()
-            return redirect(b.link)
+            return redirect(b.link, 307)
     abort(404)
