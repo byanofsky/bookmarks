@@ -1,9 +1,16 @@
+import random
+import string
 from bookmarks import app, bcrypt, login_manager
 from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
-from bookmarks.modules.hex_gen import hex_gen
 import flask_login
+
+
+def hex_gen():
+    # Generates a six character string of upper/lower letters and digits
+    return ''.join(random.choice(
+        string.ascii_letters + string.digits) for _ in range(6))
 
 
 @app.teardown_appcontext
