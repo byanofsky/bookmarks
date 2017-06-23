@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+  <ul>
+    {% for b in bookmarks %}
+    <li>
+      <a href="{{ url_for('front_page') }}{{ b.short }}"
+         target="_blank">{{ b.short }}</a>
+      | {{ b.link }}
+    </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

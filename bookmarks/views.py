@@ -12,7 +12,8 @@ def shutdown_session(exception=None):
 
 @app.route('/', methods=['GET'])
 def front_page():
-    return 'home'
+    bookmarks = Bookmark.query.all()
+    return render_template('front_page.html', bookmarks=bookmarks)
 
 
 @app.route('/add_bookmark/', methods=['GET', 'POST'])
