@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
-from sqlalchemy.dialects.mysql import BIGINT
+from sqlalchemy import Column, Integer, BigInteger, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from bookmarks.database import Base
 
@@ -28,7 +27,7 @@ class Bookmark(Base):
     __tablename__ = 'bookmark'
     id = Column(String(6), primary_key=True, unique=True, nullable=False)
     link = Column(Text, nullable=False)
-    hits = Column(BIGINT(unsigned=True))
+    hits = Column(BigInteger)
 
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User", back_populates="bookmarks")
