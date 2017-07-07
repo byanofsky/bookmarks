@@ -4,28 +4,14 @@ from bookmarks import app, bcrypt, login_manager
 from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo, Email
 import flask_login
+from bookmarks.forms import RegisterForm
 
 
 def hex_gen():
     # Generates a six character string of upper/lower letters and digits
     return ''.join(random.choice(
         string.ascii_lowercase + string.digits) for _ in range(6))
-
-
-class RegisterForm(FlaskForm):
-    username = StringField('Username', [Length(min=4, max=25)])
-    name = StringField('Name', [DataRequired()])
-    email = StringField('Email Address', [Email, Length(min=6, max=35)])
-    password = PasswordField('New Password', [
-        Length(min=5, max=18),
-        EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Repeat Password')
-    accept_tos = BooleanField('I accept the TOS', [DataRequired()])
 
 
 @app.teardown_appcontext
