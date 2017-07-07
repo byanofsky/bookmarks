@@ -4,6 +4,9 @@ from bookmarks import app, bcrypt, login_manager
 from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField
+from wtforms.validators import DataRequired, Length, EqualTo, Email
 import flask_login
 
 
@@ -11,6 +14,18 @@ def hex_gen():
     # Generates a six character string of upper/lower letters and digits
     return ''.join(random.choice(
         string.ascii_lowercase + string.digits) for _ in range(6))
+
+
+class RegisterForm(FlaskForm):
+    username = StringField('Username', [Length(min=4, max=25)])
+    name = StringField('Name', [DataRequired()])
+    email = StringField('Email Address', [Email, Length(min=6, max=35)])
+    password = PasswordField('New Password', [
+        Length(min=5, max=18),
+        EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
+    accept_tos = BooleanField('I accept the TOS', [DataRequired()])
 
 
 @app.teardown_appcontext
@@ -56,12 +71,13 @@ def add_bookmark():
 
 @app.route('/register_user/', methods=['GET', 'POST'])
 def register_user():
-    if request.method == 'POST':
-        username = request.form['username']
-        name = request.form['name']
-        email = request.form['email']
-        password = request.form['password']
-        pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+    form = RegisterForm(request.form)
+    # if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
+        username = form.username.data
+        name = form.name.data
+        email = form.email.data
+        pw_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         u = User(username, name, email, pw_hash)
         db_session.add(u)
         db_session.commit()
@@ -69,8 +85,7 @@ def register_user():
               category='info')
         # return redirect(url_for('front_page'), 303)
         return redirect(url_for('register_user'), 303)
-    else:
-        return render_template('register_user.html')
+    return render_template('register_user.html', form=form)
 
 
 @app.route('/login_user/', methods=['GET', 'POST'])

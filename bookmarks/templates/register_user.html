@@ -1,14 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
   <form action="" method="post">
-    <label for="username">Username</label>
-    <input type="text" name="username" value="">
-    <label for="name">Name</label>
-    <input type="text" name="name" value="">
-    <label for="email">Email</label>
-    <input type="text" name="email" value="">
-    <label for="password">Password</label>
-    <input type="text" name="password" value="">
+    {{ form.csrf_token }}
+    {{ form.username.label }} {{ form.username(size=20) }}
+    {{ form.name.label }} {{ form.name(size=20) }}
+    {{ form.email.label }} {{ form.email(size=20) }}
+    {{ form.password.label }} {{ form.password(size=20) }}
+    {{ form.confirm.label }} {{ form.confirm(size=20) }}
+    {{ form.accept_tos.label }} {{ form.accept_tos(size=20) }}
     <input type="submit" value="Submit">
   </form>
 {% endblock %}
