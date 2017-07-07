@@ -1,13 +1,14 @@
 {% extends "layout.html" %}
+{% from "_formhelpers.html" import render_field %}
 {% block body %}
   <form action="" method="post">
     {{ form.csrf_token }}
-    {{ form.username.label }} {{ form.username(size=20) }}
-    {{ form.name.label }} {{ form.name(size=20) }}
-    {{ form.email.label }} {{ form.email(size=20) }}
-    {{ form.password.label }} {{ form.password(size=20) }}
-    {{ form.confirm.label }} {{ form.confirm(size=20) }}
-    {{ form.accept_tos.label }} {{ form.accept_tos(size=20) }}
+    {{ render_field(form.username) }}
+    {{ render_field(form.name) }}
+    {{ render_field(form.email) }}
+    {{ render_field(form.password) }}
+    {{ render_field(form.confirm) }}
+    {{ render_field(form.accept_tos) }}
     <input type="submit" value="Submit">
   </form>
 {% endblock %}
