@@ -57,21 +57,32 @@ def add_bookmark():
 
 @app.route('/register_user/', methods=['GET', 'POST'])
 def register_user():
-    form = RegisterForm(request.form)
-    # if form.validate_on_submit():
-    if request.method == 'POST' and form.validate():
+    form = RegisterForm()
+    errors = {}
+    if form.validate_on_submit() and request.method == 'POST':
         username = form.username.data
         name = form.name.data
         email = form.email.data
-        pw_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        u = User(username, name, email, pw_hash)
-        db_session.add(u)
-        db_session.commit()
-        flash('Successfully registered {} {} {}'.format(username, name, email),
-              category='info')
-        # return redirect(url_for('front_page'), 303)
-        return redirect(url_for('register_user'), 303)
-    return render_template('register_user.html', form=form)
+        # Check if username and email already exist
+        if User.query.filter(User.username == username).one_or_none() is not None:
+            errors['username_exists'] = True
+            flash(
+                'A user already exists with the username {}'.format(username),
+                category='error')
+        if User.query.filter(User.email == email).one_or_none() is not None:
+            errors['email_exists'] = True
+            flash('A user already exists with the email {}'.format(email),
+                  category='error')
+        if not errors:
+            pw_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            u = User(username, name, email, pw_hash)
+            db_session.add(u)
+            db_session.commit()
+            flash('Successfully registered {} {} {}'.format(username, name, email),
+                  category='info')
+            # return redirect(url_for('front_page'), 303)
+            return redirect(url_for('register_user'), 303)
+    return render_template('register_user.html', form=form, errors=errors)
 
 
 @app.route('/login_user/', methods=['GET', 'POST'])
