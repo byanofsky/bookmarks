@@ -6,7 +6,7 @@ from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
 import flask_login
-from bookmarks.forms import RegisterForm
+from bookmarks.forms import BookmarkForm, RegisterForm
 
 # Create user agent for requests
 USER_AGENT = '{}/{}'.format(
@@ -43,11 +43,14 @@ def front_page():
 @app.route('/add_bookmark/', methods=['GET', 'POST'])
 @flask_login.login_required
 def add_bookmark():
-    if request.method == 'POST':
-        b_id = request.form['b_id']
-        link = request.form['link']
+    # Generate a possible id
+    b_id = hex_gen()
+    form = BookmarkForm(b_id=b_id)
+    if form.validate_on_submit() and request.method == 'POST':
+        b_id = form.b_id.data
+        link = form.link.data
         # T/F for following link redirects
-        follow_redirects = request.form.get('follow_redirects') == 'on'
+        follow_redirects = form.follow_redirects.data
         # Test that link works, or return error to user
         try:
             r = requests.get(link, headers={'user-agent': USER_AGENT},
@@ -81,12 +84,10 @@ def add_bookmark():
             flash('Successfully added {} {}'.format(b_id, url),
                   category='info')
             return redirect(url_for('add_bookmark'), 303)
-    # Generate a possible id
-    b_id = hex_gen()
     # If it exists, keep regenerating
     while Bookmark.query.filter(Bookmark.id == b_id).first() is not None:
         b_id = hex_gen()
-    return render_template('add_bookmark.html', b_id=b_id)
+    return render_template('add_bookmark.html', form=form, b_id=b_id)
 
 
 @app.route('/register_user/', methods=['GET', 'POST'])

@@ -1,6 +1,19 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo, Email
+from wtforms.validators import DataRequired, Length, EqualTo, Email, URL
+
+
+class BookmarkForm(FlaskForm):
+    b_id = StringField('Bookmark ID', [
+        Length(min=6,
+               max=6,
+               message='Bookmark ID must be 6 characters long')
+    ])
+    link = StringField('Link', [
+        DataRequired(),
+        URL(message='Link must be a properly formatted URL')
+    ])
+    follow_redirects = BooleanField('Follow Redirects?')
 
 
 class RegisterForm(FlaskForm):

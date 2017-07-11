@@ -1,12 +1,11 @@
 {% extends "layout.html" %}
+{% from "_formhelpers.html" import render_field %}
 {% block body %}
-  <form action="/add_bookmark/" method="post">
-    <label for="b_id">Bookmark ID</label>
-    <input type="text" name="b_id" value="{{ b_id }}">
-    <label for="link">Link</label>
-    <input type="text" name="link" value="">
-    <input type="checkbox" name="follow_redirects">
-    <label for="follow_redirects">Follow Redirects?</label>
+  <form action="" method="post">
+    {{ form.csrf_token }}
+    {{ render_field(form.b_id) }}
+    {{ render_field(form.link) }}
+    {{ render_field(form.follow_redirects) }}
     <input type="submit" value="Submit">
   </form>
 {% endblock %}
