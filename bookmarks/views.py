@@ -27,7 +27,7 @@ def shutdown_session(exception=None):
 
 @login_manager.user_loader
 def load_user(user_id):
-    if not User.query.filter(User.id == user_id).first():
+    if not User.query.filter(User.id == user_id).one_or_none():
         return
     user = flask_login.UserMixin()
     user.id = user_id
@@ -125,7 +125,7 @@ def login_user():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        u = User.query.filter(User.username == username).first()
+        u = User.query.filter(User.username == username).one_or_none()
         if u is not None:
             if bcrypt.check_password_hash(u.pw_hash, password):
                 user = flask_login.UserMixin()
@@ -157,7 +157,7 @@ def logout_user():
 @app.route('/<string:b_id>', methods=['GET'])
 def get_bookmark(b_id):
     if len(b_id) == 6:
-        b = Bookmark.query.filter(Bookmark.id == b_id).first()
+        b = Bookmark.query.filter(Bookmark.id == b_id).one_or_none()
         if b is not None:
             b.hits += 1
             db_session.add(b)
