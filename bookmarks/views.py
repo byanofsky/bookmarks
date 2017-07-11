@@ -1,11 +1,17 @@
 import random
 import string
+import requests
 from bookmarks import app, bcrypt, login_manager
 from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
 import flask_login
 from bookmarks.forms import RegisterForm
+
+# Create user agent for requests
+USER_AGENT = '{}/{}'.format(
+    app.config['USER_AGENT_NAME'],
+    app.config['VERSION_NUMBER'])
 
 
 def hex_gen():
@@ -40,19 +46,47 @@ def add_bookmark():
     if request.method == 'POST':
         b_id = request.form['b_id']
         link = request.form['link']
-        b = Bookmark(b_id, link, user_id=flask_login.current_user.id)
-        db_session.add(b)
-        db_session.commit()
-        flash('Successfully added {} {}'.format(b_id, link),
-              category='info')
-        return redirect(url_for('add_bookmark'), 303)
-    else:
-        # Generate a possible id
+        # T/F for following link redirects
+        follow_redirects = request.form.get('follow_redirects') == 'on'
+        # Test that link works, or return error to user
+        try:
+            r = requests.get(link, headers={'user-agent': USER_AGENT},
+                             allow_redirects=follow_redirects)
+            r.raise_for_status()
+        # Exceptions for 400 or 500 errors
+        except requests.exceptions.HTTPError as e:
+            flash('Please check your link. It leads to this error: {}.'
+                  .format(e),
+                  category='error')
+        # Connection errors
+        except requests.exceptions.ConnectionError:
+            flash('Could not connect to your link. Please check URL.')
+        # Timeout errors
+        except requests.exceptions.Timeout:
+            flash('There was a timeout error. Please check URL.')
+        # Too many redirects
+        except requests.exceptions.TooManyRedirects:
+            flash('Exceeded max number of redirects. Please check URL.')
+        # All other requests-related exceptions
+        except requests.exceptions.RequestException as e:
+            flash('Please check your link. It leads to this error: {}.'
+                  .format(e),
+                  category='error')
+        # No errors when requesting link, so add to database
+        else:
+            url = r.url  # Get final url (from redirects)
+            b = Bookmark(b_id, link=url, user_id=flask_login.current_user.id)
+            db_session.add(b)
+            db_session.commit()
+            flash('Successfully added {} {}'.format(b_id, url),
+                  category='info')
+            return redirect(url_for('add_bookmark'), 303)
+    # Generate a possible id
+    b_id = hex_gen()
+    # If it exists, keep regenerating
+    while Bookmark.query.filter(Bookmark.id == b_id).first() is not None:
         b_id = hex_gen()
-        # If it exists, keep regenerating
-        while Bookmark.query.filter(Bookmark.id == b_id).first() is not None:
-            b_id = hex_gen()
-        return render_template('add_bookmark.html', b_id=b_id)
+    return render_template('add_bookmark.html', b_id=b_id)
 
 
 @app.route('/register_user/', methods=['GET', 'POST'])
