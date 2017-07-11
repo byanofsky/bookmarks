@@ -1,13 +1,17 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo, Email, URL
+from wtforms.validators import (DataRequired, Length, EqualTo, Email, Regexp,
+                                URL)
 
 
 class BookmarkForm(FlaskForm):
     b_id = StringField('Bookmark ID', [
         Length(min=6,
                max=6,
-               message='Bookmark ID must be 6 characters long')
+               message='Bookmark ID must be 6 characters long'),
+        # Validate only lowercase letters and numbers
+        Regexp('^[0-9a-z]{1,6}$',
+               message='Can only include lowercase letters and digits')
     ])
     link = StringField('Link', [
         DataRequired(),
