@@ -29,8 +29,14 @@ class RegisterForm(FlaskForm):
     name = StringField('Name', [DataRequired()])
     email = StringField('Email Address', [Email(), Length(min=6, max=35)])
     password = PasswordField('New Password', [
-        Length(min=5, max=18),
-        EqualTo('confirm', message='Passwords must match')
+        Length(min=5, max=18,
+               message='Password must be 5 to 18 characters long'),
+        # Check for 1 lower, 1 upper, and number
+        Regexp('^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{5,18}$',
+               message='Password must include at least one lowercase letter, \
+                        one uppercase letter, and one number.')
     ])
-    confirm = PasswordField('Repeat Password')
+    confirm = PasswordField('Repeat Password',[
+        EqualTo('password', message='You must confirm your password')
+    ])
     accept_tos = BooleanField('I accept the TOS')
