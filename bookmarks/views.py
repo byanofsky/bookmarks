@@ -115,8 +115,10 @@ def register_user():
             db_session.commit()
             flash('Successfully registered {} {} {}'.format(username, name, email),
                   category='info')
-            # return redirect(url_for('front_page'), 303)
-            return redirect(url_for('register_user'), 303)
+            user = flask_login.UserMixin()
+            user.id = u.id
+            flask_login.login_user(user)
+            return redirect(url_for('front_page'), 303)
     return render_template('register_user.html', form=form, errors=errors)
 
 
