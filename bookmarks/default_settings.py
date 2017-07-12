@@ -1,1 +1,7 @@
+USER_AGENT_NAME = 'bookmarks'
+VERSION_NUMBER = '0.0.1'
 SECRET_KEY = 'development key'
+DATABASE_USERNAME = 'bookmarks'
+DATABASE_PASSWORD = ''
+DATABASE_HOST = 'localhost'
+DATABASE_NAME = 'bookmarks'
