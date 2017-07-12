@@ -5,15 +5,6 @@
     <title>Bookmarks</title>
   </head>
   <body>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class="flashes">
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
     <div class="nav">
       <ul>
         <li><a href="{{ url_for('front_page') }}">Home</a></li>
@@ -29,6 +20,17 @@
       {% else %}
         You are not currently logged in
       {% endif %}
+    </div>
+    <div class="flash-messages">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="flashes">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
     </div>
     {% block body %}{% endblock %}
   </body>
