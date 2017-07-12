@@ -13,7 +13,6 @@ USER_AGENT = '{}/{}'.format(
     app.config['USER_AGENT_NAME'],
     app.config['VERSION_NUMBER'])
 
-
 def hex_gen():
     # Generates a six character string of upper/lower letters and digits
     return ''.join(random.choice(
