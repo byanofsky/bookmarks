@@ -5,8 +5,6 @@
     <title>Bookmarks</title>
   </head>
   <body>
-    {{ current_user.id }}
-    {{ current_user.is_authenticated }}
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul class="flashes">
@@ -24,6 +22,13 @@
         <li><a href="{{ url_for('logout_user') }}">Logout</a></li>
         <li><a href="{{ url_for('add_bookmark') }}">Create</a></li>
       </ul>
+    </div>
+    <div class="user-info">
+      {% if current_user.is_authenticated %}
+        You are logged in as {{ current_user.name }}
+      {% else %}
+        You are not currently logged in
+      {% endif %}
     </div>
     {% block body %}{% endblock %}
   </body>

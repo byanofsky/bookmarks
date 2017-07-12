@@ -27,10 +27,12 @@ def shutdown_session(exception=None):
 
 @login_manager.user_loader
 def load_user(user_id):
-    if not User.query.filter(User.id == user_id).one_or_none():
-        return
+    u = User.query.filter(User.id == user_id).one_or_none()
+    if not u:
+        return None
     user = flask_login.UserMixin()
-    user.id = user_id
+    user.id = u.id
+    user.name = u.name
     return user
 
 
