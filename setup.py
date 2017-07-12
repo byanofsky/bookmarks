@@ -13,6 +13,8 @@ setup(
         'SQLalchemy',
         'mysqlclient',
         'Flask-Bcrypt',
-        'Flask-Login'
+        'Flask-Login',
+        'Flask-WTF',
+        'requests'
     ],
 )
