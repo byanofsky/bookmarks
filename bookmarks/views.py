@@ -137,14 +137,12 @@ def login_user():
                 flask_login.login_user(user)
                 flash('Successfully logged in {}'.format(username),
                       category='info')
-                return redirect(url_for('login_user'), 303)
+                return redirect(url_for('front_page'), 303)
             else:
                 flash('Password incorrect')
         else:
             flash('User does not exist')
-        return redirect(url_for('login_user'))
-    else:
-        return render_template('login_user.html')
+    return render_template('login_user.html')
 
 
 @app.route('/logout_user/', methods=['GET', 'POST'])
