@@ -6,7 +6,7 @@ from flask import flash, render_template, request, redirect, url_for, abort
 from bookmarks.database import db_session
 from bookmarks.models import User, Bookmark
 import flask_login
-from bookmarks.forms import BookmarkForm, RegisterForm
+from bookmarks.forms import BookmarkForm, RegisterForm, LoginForm
 
 # Create user agent for requests
 USER_AGENT = '{}/{}'.format(
@@ -126,23 +126,30 @@ def register_user():
 
 @app.route('/login_user/', methods=['GET', 'POST'])
 def login_user():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    form = LoginForm()
+    if form.validate_on_submit() and request.method == 'POST':
+        username = form.username.data
+        password = form.password.data
+        # Attempt to get user record
         u = User.query.filter(User.username == username).one_or_none()
+        # Check if user exists
         if u is not None:
+            # Check if password is correct
             if bcrypt.check_password_hash(u.pw_hash, password):
+                # Log user in
                 user = flask_login.UserMixin()
                 user.id = u.id
                 flask_login.login_user(user)
                 flash('Successfully logged in {}'.format(username),
                       category='info')
                 return redirect(url_for('front_page'), 303)
+            # Password is not correct, flash message
             else:
                 flash('Password incorrect')
+        # User does not exist, flash message
         else:
             flash('User does not exist')
-    return render_template('login_user.html')
+    return render_template('login_user.html', form=form)
 
 
 @app.route('/logout_user/', methods=['GET', 'POST'])

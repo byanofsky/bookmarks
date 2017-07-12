@@ -40,3 +40,8 @@ class RegisterForm(FlaskForm):
         EqualTo('password', message='You must confirm your password')
     ])
     accept_tos = BooleanField('I accept the TOS')
+
+
+class LoginForm(FlaskForm):
+    username = StringField('Username', [DataRequired()])
+    password = PasswordField('Password', [DataRequired()])
