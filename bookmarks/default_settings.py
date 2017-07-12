@@ -1,5 +1,7 @@
+import pkg_resources  # part of setuptools
+
 USER_AGENT_NAME = 'bookmarks'
-VERSION_NUMBER = '0.0.1'
+VERSION_NUMBER = pkg_resources.require('bookmarks')[0].version
 SECRET_KEY = 'development key'
 DATABASE_USERNAME = 'bookmarks'
 DATABASE_PASSWORD = ''

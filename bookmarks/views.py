@@ -12,7 +12,7 @@ from bookmarks.forms import BookmarkForm, RegisterForm, LoginForm
 USER_AGENT = '{}/{}'.format(
     app.config['USER_AGENT_NAME'],
     app.config['VERSION_NUMBER'])
-
+assert 1 != 1
 
 def hex_gen():
     # Generates a six character string of upper/lower letters and digits
