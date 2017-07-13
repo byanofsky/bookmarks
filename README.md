@@ -17,11 +17,13 @@ These instructions will get the project up and running on your local machine for
 
 ### Prerequisites
 
+Included in this repo is a Vagrantfile which already has Python 3, virtualenv, and PostgreSQL installed. If you use your own, please see other prerequisites below.
+
 You will need to have [Python 3](https://wiki.python.org/moin/BeginnersGuide/Download) installed, as well as pip, setuptools, and wheels. You most likely already have these 3 installed, but if not, you can find [instructions for installing them here](https://packaging.python.org/tutorials/installing-packages/#install-pip-setuptools-and-wheel).
 
 I'd also recommend setting up a virtual environment using [virtualenv](https://packaging.python.org/tutorials/installing-packages/#optionally-create-a-virtual-environment).
 
-Lastly, you will need a MySQL database set up with a user that has access to the created database.
+Lastly, you will need a PostgreSQL database set up with a user that has access to the created database.
 
 ### Installing
 
@@ -67,7 +69,7 @@ Coming Soon!
 
 * [Flask](http://flask.pocoo.org/) - web framework
 * [SQLalchemy](https://www.sqlalchemy.org/) - Python SQL toolkit
-* [mysqlclient](https://pypi.python.org/pypi/mysqlclient) - interface to MySQL database server
+* [psycopg2](http://initd.org/psycopg/) - PostgreSQL adapter for Python
 * [Flask-Bcrypt](https://flask-bcrypt.readthedocs.io/en/latest/) - Flask extension that provides bcrypt hashing utilities
 * [Flask-Login](https://flask-login.readthedocs.io/en/latest/) - Flask extension that provides user session management
 * [WTForms](https://wtforms.readthedocs.io/en/latest/) - forms validation and rendering library for Python
