@@ -75,6 +75,6 @@ Vagrant.configure("2") do |config|
     sudo apt-get install -y build-essential
     sudo apt-get install -y virtualenv
 
-    sudo apt-get install -y libmysqlclient-dev
+    sudo apt-get install -y postgresql postgresql-contrib
   SHELL
 end

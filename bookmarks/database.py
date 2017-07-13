@@ -3,7 +3,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from bookmarks import app
 
-DATABASE_URL = 'mysql://{}:{}@{}/{}'.format(
+DATABASE_URL = 'postgresql://{}:{}@{}/{}'.format(
     app.config['DATABASE_USERNAME'],
     app.config['DATABASE_PASSWORD'],
     app.config['DATABASE_HOST'],

@@ -11,7 +11,7 @@ setup(
     install_requires=[
         'Flask',
         'SQLalchemy',
-        'mysqlclient',
+        'psycopg2',
         'Flask-Bcrypt',
         'Flask-Login',
         'Flask-WTF',
