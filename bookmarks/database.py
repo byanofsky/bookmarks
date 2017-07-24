@@ -3,14 +3,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from bookmarks import app
 
-DATABASE_URL = 'postgresql://{}:{}@{}/{}'.format(
-    app.config['DATABASE_USERNAME'],
-    app.config['DATABASE_PASSWORD'],
-    app.config['DATABASE_HOST'],
-    app.config['DATABASE_NAME']
-)
-
-engine = create_engine(DATABASE_URL, convert_unicode=True)
+engine = create_engine(app.config['DATABASE_URI'], convert_unicode=True)
 
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
