@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+  {% if bookmarks %}
   <ul>
     {% for b in bookmarks %}
     <li>
@@ -11,4 +12,9 @@
     </li>
     {% endfor %}
   </ul>
+  {% else %}
+  <p>
+    There aren't any bookmarks yet.
+  </p>
+  {% endif %}
 {% endblock %}
