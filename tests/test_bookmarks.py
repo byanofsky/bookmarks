@@ -2,7 +2,7 @@ import bookmarks
 import unittest
 
 
-class FlaskrTestCase(unittest.TestCase):
+class BookmarksTestCase(unittest.TestCase):
     def setUp(self):
         self.app = bookmarks.app.test_client()
         # with bookmarks.app.app_context():
