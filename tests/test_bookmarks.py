@@ -42,9 +42,70 @@ class FlaskrTestCase(unittest.TestCase):
         name = 'Brandon Yanofsky'
         email = 'byanofsky@me.com'
         password = 'Brandon123'
-        rv = self.register(username, name, email, password)
-        # print(rv.data)
-        assert (b'Successfully registered ' in rv.data)
+        rv = self.register(username, name, email, password, confirm=password)
+        msg = 'Successfully registered {} {} {}'.format(
+            username,
+            name,
+            email
+        )
+        assert (msg.encode('utf-8') in rv.data)
+
+    def test_user_exist_register(self):
+        # Create a new account
+        username = 'byanofsky'
+        name = 'Brandon Yanofsky'
+        email = 'byanofsky@me.com'
+        password = 'Brandon123'
+        rv = self.register(username, name, email, password, confirm=password)
+        msg = 'Successfully registered {} {} {}'.format(
+            username,
+            name,
+            email
+        )
+        assert (msg.encode('utf-8') in rv.data)
+        # Create a duplicate of that account
+        rv = self.register(username, name, email, password, confirm=password)
+        # Check error message for existing username
+        msg = 'A user already exists with the username {}'.format(username)
+        assert (msg.encode('utf-8') in rv.data)
+        # Check error message for existing email
+        msg = 'A user already exists with the email {}'.format(email)
+        assert (msg.encode('utf-8') in rv.data)
+
+    def test_register_validation(self):
+        username = 'bya'
+        name = ''
+        email = 'bya'
+        password = 'Bra'
+        confirm = ''
+        # Check username length validation
+        rv = self.register(username, name, email, password, confirm)
+        msg = 'Username must be between 4 and 25 characters'
+        assert (msg.encode('utf-8') in rv.data)
+        # Check name validation
+        msg = 'This field is required.'
+        assert (msg.encode('utf-8') in rv.data)
+        # Check email address length and email format
+        msg = 'Invalid email address.'
+        assert (msg.encode('utf-8') in rv.data)
+        msg = 'Field must be between 6 and 35 characters long.'
+        assert (msg.encode('utf-8') in rv.data)
+        # Check password length and format
+        msg = 'Password must be 5 to 18 characters long'
+        assert (msg.encode('utf-8') in rv.data)
+        msg = ('Password must include at least one lowercase letter, ' +
+               'one uppercase letter, and one number.')
+        assert (msg.encode('utf-8') in rv.data)
+
+        # Make new request, check password confirmed
+        rv = self.register(
+            username='byanofsky',
+            name='Brandon Yanofsky',
+            email='byanofsky@me.com',
+            password='Brandon123',
+            confirm='')
+        msg = 'You must confirm your password'
+        assert (msg.encode('utf-8') in rv.data)
 
 
 if __name__ == '__main__':
