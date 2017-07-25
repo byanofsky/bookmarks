@@ -44,7 +44,7 @@ class BookmarksTestCase(unittest.TestCase):
     def logout(self):
         return self.app.post('/logout_user/', follow_redirects=True)
 
-    def test_user_register(self):
+    def user_register(self):
         rv = self.register(
             self.user['username'],
             self.user['name'],
@@ -58,6 +58,24 @@ class BookmarksTestCase(unittest.TestCase):
             self.user['email']
         )
         assert (msg.encode('utf-8') in rv.data)
+
+    def user_login(self):
+        rv = self.login(self.user['username'], self.user['password'])
+        msg = 'Successfully logged in {}'.format(self.user['username'])
+        assert (msg.encode('utf-8') in rv.data)
+
+    def user_logout(self):
+        rv = self.logout()
+        assert (b'Successfully logged out' in rv.data)
+    def test_register_login_logout(self):
+        # Register a new account
+        self.user_register()
+        # Logout
+        self.user_logout()
+        # Log back in
+        self.user_login()
+        # Log back out
+        self.user_logout()
 
     def test_user_exist_register(self):
         # Create a new account
@@ -115,20 +133,6 @@ class BookmarksTestCase(unittest.TestCase):
             confirm='')
         msg = 'You must confirm your password'
         assert (msg.encode('utf-8') in rv.data)
-
-    def test_login_logout(self):
-        # Register a new account
-        username = 'byanofsky'
-        name = 'Brandon Yanofsky'
-        email = 'byanofsky@me.com'
-        password = 'Brandon123'
-        self.register(username, name, email, password, confirm=password)
-        self.logout()
-        rv = self.login(username, password)
-        msg = 'Successfully logged in {}'.format(username)
-        assert (msg.encode('utf-8') in rv.data)
-        rv = self.logout()
-        assert (b'Successfully logged out' in rv.data)
 
     def test_login_user_pw_errors(self):
         # Register a new account
