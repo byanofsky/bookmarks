@@ -5,14 +5,14 @@ import unittest
 class FlaskrTestCase(unittest.TestCase):
     def setUp(self):
         self.app = bookmarks.app.test_client()
-        with bookmarks.app.app_context():
-            bookmarks.database.init_db()
+        # with bookmarks.app.app_context():
+        bookmarks.database.init_db()
 
     def tearDown(self):
-        with bookmarks.app.app_context():
-            bookmarks.database.db_session.remove()
-            bookmarks.database.Base.metadata.drop_all(
-                bind=bookmarks.database.engine)
+        # with bookmarks.app.app_context():
+        bookmarks.database.db_session.remove()
+        bookmarks.database.Base.metadata.drop_all(
+            bind=bookmarks.database.engine)
 
     def test_empty_db(self):
         rv = self.app.get('/')
