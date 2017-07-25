@@ -64,6 +64,12 @@ class BookmarksTestCase(unittest.TestCase):
         rv = self.logout()
         assert (b'Successfully logged out' in rv.data)
 
+    def add_bookmark(self, b_id, link):
+        return self.app.post('/add_bookmark/', data=dict(
+            b_id=b_id,
+            link=link
+        ), follow_redirects=True)
+
     # Begin test functions
     def test_empty_db(self):
         rv = self.app.get('/')
@@ -159,6 +165,16 @@ class BookmarksTestCase(unittest.TestCase):
         assert (b'Please enter a username' in rv.data)
         assert (b'Please enter a password' in rv.data)
         self.user_login()
+
+    def test_add_bookmark(self):
+        b_id = 'a1b2c3'
+        link = 'https://www.google.com/'
+        # Register an account
+        self.user_register()
+        # Attempt to add bookmark
+        rv = self.add_bookmark(b_id, link)
+        msg = 'Successfully added {} {}'.format(b_id, link)
+        assert (msg.encode('utf-8') in rv.data)
 
 if __name__ == '__main__':
     unittest.main()
