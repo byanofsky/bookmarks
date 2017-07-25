@@ -139,5 +139,16 @@ class BookmarksTestCase(unittest.TestCase):
         msg = 'Successfully logged in {}'.format(username)
         assert (msg.encode('utf-8') in rv.data)
 
+    def test_login_validation(self):
+        # Register a new account
+        username = 'byanofsky'
+        name = 'Brandon Yanofsky'
+        email = 'byanofsky@me.com'
+        password = 'Brandon123'
+        self.register(username, name, email, password, confirm=password)
+        rv = self.login(None, None)
+        assert (b'Please enter a username' in rv.data)
+        assert (b'Please enter a password' in rv.data)
+
 if __name__ == '__main__':
     unittest.main()
