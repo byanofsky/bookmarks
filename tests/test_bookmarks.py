@@ -120,6 +120,24 @@ class BookmarksTestCase(unittest.TestCase):
         rv = self.logout()
         assert (b'Successfully logged out' in rv.data)
 
+    def test_login_user_pw_errors(self):
+        # Register a new account
+        username = 'byanofsky'
+        name = 'Brandon Yanofsky'
+        email = 'byanofsky@me.com'
+        password = 'Brandon123'
+        self.register(username, name, email, password, confirm=password)
+        self.logout()
+        # Try username that does not exist
+        rv = self.login('nouser', password)
+        assert (b'User does not exist' in rv.data)
+        # Try incorrect password
+        rv = self.login(username, '12345')
+        assert (b'Password incorrect' in rv.data)
+        # Successful login
+        rv = self.login(username, password)
+        msg = 'Successfully logged in {}'.format(username)
+        assert (msg.encode('utf-8') in rv.data)
 
 if __name__ == '__main__':
     unittest.main()
