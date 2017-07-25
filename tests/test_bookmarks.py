@@ -81,24 +81,26 @@ class BookmarksTestCase(unittest.TestCase):
 
     def test_user_exist_register(self):
         # Create a new account
-        username = 'byanofsky'
-        name = 'Brandon Yanofsky'
-        email = 'byanofsky@me.com'
-        password = 'Brandon123'
-        rv = self.register(username, name, email, password, confirm=password)
-        msg = 'Successfully registered {} {} {}'.format(
-            username,
-            name,
-            email
+        self.user_register()
+        # Logout
+        self.user_logout()
+        # Create a duplicate of that account
+        rv = self.register(
+            self.user['username'],
+            self.user['name'],
+            self.user['email'],
+            self.user['password'],
+            confirm=self.user['password']
+        )
+        # Check error message for existing username
+        msg = 'A user already exists with the username {}'.format(
+            self.user['username']
         )
         assert (msg.encode('utf-8') in rv.data)
-        # Create a duplicate of that account
-        rv = self.register(username, name, email, password, confirm=password)
-        # Check error message for existing username
-        msg = 'A user already exists with the username {}'.format(username)
-        assert (msg.encode('utf-8') in rv.data)
         # Check error message for existing email
-        msg = 'A user already exists with the email {}'.format(email)
+        msg = 'A user already exists with the email {}'.format(
+            self.user['email']
+        )
         assert (msg.encode('utf-8') in rv.data)
 
     def test_register_validation(self):
@@ -132,39 +134,31 @@ class BookmarksTestCase(unittest.TestCase):
             name='Brandon Yanofsky',
             email='byanofsky@me.com',
             password='Brandon123',
-            confirm='')
+            confirm=''
+        )
         msg = 'You must confirm your password'
         assert (msg.encode('utf-8') in rv.data)
 
     def test_login_user_pw_errors(self):
         # Register a new account
-        username = 'byanofsky'
-        name = 'Brandon Yanofsky'
-        email = 'byanofsky@me.com'
-        password = 'Brandon123'
-        self.register(username, name, email, password, confirm=password)
-        self.logout()
+        self.user_register()
+        self.user_logout()
         # Try username that does not exist
-        rv = self.login('nouser', password)
+        rv = self.login('nouser', self.user['password'])
         assert (b'User does not exist' in rv.data)
         # Try incorrect password
-        rv = self.login(username, '12345')
+        rv = self.login(self.user['username'], '12345')
         assert (b'Password incorrect' in rv.data)
         # Successful login
-        rv = self.login(username, password)
-        msg = 'Successfully logged in {}'.format(username)
-        assert (msg.encode('utf-8') in rv.data)
+        self.user_login()
 
     def test_login_validation(self):
         # Register a new account
-        username = 'byanofsky'
-        name = 'Brandon Yanofsky'
-        email = 'byanofsky@me.com'
-        password = 'Brandon123'
-        self.register(username, name, email, password, confirm=password)
+        self.user_register()
         rv = self.login(None, None)
         assert (b'Please enter a username' in rv.data)
         assert (b'Please enter a password' in rv.data)
+        self.user_login()
 
 if __name__ == '__main__':
     unittest.main()
