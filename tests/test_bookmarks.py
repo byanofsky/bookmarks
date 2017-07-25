@@ -3,6 +3,14 @@ import unittest
 
 
 class BookmarksTestCase(unittest.TestCase):
+    # Define a user
+    user = {
+        'username': 'byanofsky',
+        'name': 'Brandon Yanofsky',
+        'email': 'byanofsky@me.com',
+        'password': 'Brandon123'
+    }
+
     def setUp(self):
         self.app = bookmarks.app.test_client()
         # with bookmarks.app.app_context():
@@ -36,16 +44,18 @@ class BookmarksTestCase(unittest.TestCase):
     def logout(self):
         return self.app.post('/logout_user/', follow_redirects=True)
 
-    def test_register(self):
-        username = 'byanofsky'
-        name = 'Brandon Yanofsky'
-        email = 'byanofsky@me.com'
-        password = 'Brandon123'
-        rv = self.register(username, name, email, password, confirm=password)
+    def test_user_register(self):
+        rv = self.register(
+            self.user['username'],
+            self.user['name'],
+            self.user['email'],
+            self.user['password'],
+            confirm=self.user['password']
+        )
         msg = 'Successfully registered {} {} {}'.format(
-            username,
-            name,
-            email
+            self.user['username'],
+            self.user['name'],
+            self.user['email']
         )
         assert (msg.encode('utf-8') in rv.data)
 
