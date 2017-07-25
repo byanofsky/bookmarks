@@ -28,14 +28,13 @@ class FlaskrTestCase(unittest.TestCase):
         ), follow_redirects=True)
 
     def login(self, username, password):
-        return self.app.post('/login', data=dict(
+        return self.app.post('/login_user/', data=dict(
             username=username,
-            password=password,
-            confirm=password
+            password=password
         ), follow_redirects=True)
 
     def logout(self):
-        return self.app.get('/logout', follow_redirects=True)
+        return self.app.post('/logout_user/', follow_redirects=True)
 
     def test_register(self):
         username = 'byanofsky'
@@ -106,6 +105,20 @@ class FlaskrTestCase(unittest.TestCase):
             confirm='')
         msg = 'You must confirm your password'
         assert (msg.encode('utf-8') in rv.data)
+
+    def test_login_logout(self):
+        # Register a new account
+        username = 'byanofsky'
+        name = 'Brandon Yanofsky'
+        email = 'byanofsky@me.com'
+        password = 'Brandon123'
+        self.register(username, name, email, password, confirm=password)
+        self.logout()
+        rv = self.login(username, password)
+        msg = 'Successfully logged in {}'.format(username)
+        assert (msg.encode('utf-8') in rv.data)
+        rv = self.logout()
+        assert (b'Successfully logged out' in rv.data)
 
 
 if __name__ == '__main__':
