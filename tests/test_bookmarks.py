@@ -18,13 +18,13 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get('/')
         assert b'There aren\'t any bookmarks yet.' in rv.data
 
-    def register(self, username, name, email, password):
+    def register(self, username, name, email, password, confirm=None):
         return self.app.post('/register_user/', data=dict(
             username=username,
             name=name,
             email=email,
             password=password,
-            confirm=password
+            confirm=confirm
         ), follow_redirects=True)
 
     def login(self, username, password):
