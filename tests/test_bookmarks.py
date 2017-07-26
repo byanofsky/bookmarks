@@ -180,6 +180,9 @@ class BookmarksTestCase(unittest.TestCase):
         # Check that b_id redirects to link
         rv = self.app.get('/' + b_id)
         assert rv.headers['Location'] == link
+        # Visit a bookmark that does not exist
+        rv = self.app.get('/fake12')
+        assert rv.status_code == 404
 
     def test_add_many_bookmarks(self):
         bookmarks = [
