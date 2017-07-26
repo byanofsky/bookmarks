@@ -69,7 +69,7 @@ class BookmarksTestCase(unittest.TestCase):
         return self.app.post('/add_bookmark/', data=dict(
             b_id=b_id,
             link=link,
-            follow_redirects=follow_redirects
+            follow_redirects='y' if follow_redirects else None
         ), follow_redirects=True)
 
     # Begin test functions
