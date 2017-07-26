@@ -191,6 +191,21 @@ class BookmarksTestCase(unittest.TestCase):
         rv = self.add_bookmark(b_id='123&&&', link='www.google.com/')
         assert b'Can only include lowercase letters and digits' in rv.data
 
+    def test_add_bookmark_errors(self):
+        b_id = 'a1b2c3'
+        # Register an account
+        self.user_register()
+        # Add a bookmark with a 400 error
+        rv = self.add_bookmark(b_id, 'http://www.google.com/404')
+        assert b'Please check your link. It leads to this error:' in rv.data
+        # Add bookmark with a connection error
+        rv = self.add_bookmark(b_id, 'http://fakewebsitegoogle.com')
+        assert b'Could not connect to your link. Please check URL.' in rv.data
+        # Simulate a timeout error
+        rv = self.add_bookmark(b_id, 'http://github.com:81')
+        assert b'There was a timeout error. Please check URL.' in rv.data
+
+
 if __name__ == '__main__':
     # Make sure we are in testing mode and testing env
     app_env = os.environ.get('APPLICATION_ENVIRONMENT')
