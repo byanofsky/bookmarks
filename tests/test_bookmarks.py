@@ -176,6 +176,10 @@ class BookmarksTestCase(unittest.TestCase):
         rv = self.add_bookmark(b_id, link)
         msg = 'Successfully added {} {}'.format(b_id, link)
         assert (msg.encode('utf-8') in rv.data)
+        # Check that b_id redirects to link
+        rv = self.app.get('/' + b_id)
+        assert rv.headers['Location'] == link
+
 
     def test_add_bookmark_validation(self):
         # Register an account
