@@ -12,6 +12,9 @@ from bookmarks.forms import BookmarkForm, RegisterForm, LoginForm
 USER_AGENT = '{}/{}'.format(
     app.config['USER_AGENT_NAME'],
     app.config['VERSION_NUMBER'])
+# Timeout for requests library
+TIMEOUT = app.config['TIMEOUT']
+
 
 def hex_gen():
     # Generates a six character string of upper/lower letters and digits
@@ -55,19 +58,20 @@ def add_bookmark():
         # Test that link works, or return error to user
         try:
             r = requests.get(link, headers={'user-agent': USER_AGENT},
-                             allow_redirects=follow_redirects)
+                             allow_redirects=follow_redirects,
+                             timeout=TIMEOUT)
             r.raise_for_status()
         # Exceptions for 400 or 500 errors
         except requests.exceptions.HTTPError as e:
             flash('Please check your link. It leads to this error: {}.'
                   .format(e),
                   category='error')
-        # Connection errors
-        except requests.exceptions.ConnectionError:
-            flash('Could not connect to your link. Please check URL.')
         # Timeout errors
         except requests.exceptions.Timeout:
             flash('There was a timeout error. Please check URL.')
+        # Connection errors
+        except requests.exceptions.ConnectionError:
+            flash('Could not connect to your link. Please check URL.')
         # Too many redirects
         except requests.exceptions.TooManyRedirects:
             flash('Exceeded max number of redirects. Please check URL.')
