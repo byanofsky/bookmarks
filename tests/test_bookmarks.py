@@ -65,10 +65,11 @@ class BookmarksTestCase(unittest.TestCase):
         rv = self.logout()
         assert (b'Successfully logged out' in rv.data)
 
-    def add_bookmark(self, b_id, link):
+    def add_bookmark(self, b_id, link, follow_redirects=False):
         return self.app.post('/add_bookmark/', data=dict(
             b_id=b_id,
-            link=link
+            link=link,
+            follow_redirects=follow_redirects
         ), follow_redirects=True)
 
     # Begin test functions
@@ -180,6 +181,20 @@ class BookmarksTestCase(unittest.TestCase):
         rv = self.app.get('/' + b_id)
         assert rv.headers['Location'] == link
 
+    def test_add_bookmark_redirects(self):
+        b_id = 'a1b2c3'
+        # Google redirects to www
+        link = 'http://google.com/'
+        r_link = 'http://www.google.com/'
+        # Register an account
+        self.user_register()
+        # Add link and follow redirect
+        rv = self.add_bookmark(b_id, link, follow_redirects=True)
+        msg = 'Successfully added {} {}'.format(b_id, r_link)
+        assert (msg.encode('utf-8') in rv.data)
+        # Check that id leads to r_link
+        rv = self.app.get('/' + b_id)
+        assert rv.headers['Location'] == r_link
 
     def test_add_bookmark_validation(self):
         # Register an account
