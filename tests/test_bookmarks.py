@@ -177,6 +177,16 @@ class BookmarksTestCase(unittest.TestCase):
         msg = 'Successfully added {} {}'.format(b_id, link)
         assert (msg.encode('utf-8') in rv.data)
 
+    def test_add_bookmark_validation(self):
+        # Register an account
+        self.user_register()
+        # Attempt to add bookmark
+        rv = self.add_bookmark(b_id='123', link='www.google.com/')
+        assert b'Bookmark ID must be 6 characters long' in rv.data
+        assert b'Link must be a properly formatted URL' in rv.data
+        rv = self.add_bookmark(b_id='123&&&', link='www.google.com/')
+        assert b'Can only include lowercase letters and digits' in rv.data
+
 if __name__ == '__main__':
     # Make sure we are in testing mode and testing env
     app_env = os.environ.get('APPLICATION_ENVIRONMENT')
