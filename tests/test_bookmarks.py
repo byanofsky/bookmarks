@@ -1,5 +1,6 @@
 import bookmarks
 import unittest
+import os
 
 
 class BookmarksTestCase(unittest.TestCase):
@@ -177,4 +178,11 @@ class BookmarksTestCase(unittest.TestCase):
         assert (msg.encode('utf-8') in rv.data)
 
 if __name__ == '__main__':
-    unittest.main()
+    # Make sure we are in testing mode and testing env
+    app_env = os.environ.get('APPLICATION_ENVIRONMENT')
+    if (bookmarks.app.config['TESTING'] is True and
+            app_env == 'testing'):
+            unittest.main()
+    else:
+        print('Need to be in a testing environment. ' +
+              'Set APPLICATION_ENVIRONMENT to testing.')
