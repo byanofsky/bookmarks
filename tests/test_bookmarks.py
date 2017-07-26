@@ -170,7 +170,7 @@ class BookmarksTestCase(unittest.TestCase):
 
     def test_add_bookmark(self):
         b_id = 'a1b2c3'
-        link = 'https://www.google.com/'
+        link = 'http://google.com/'
         # Register an account
         self.user_register()
         # Attempt to add bookmark
