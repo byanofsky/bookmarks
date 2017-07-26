@@ -181,10 +181,27 @@ class BookmarksTestCase(unittest.TestCase):
         rv = self.app.get('/' + b_id)
         assert rv.headers['Location'] == link
 
+    def test_add_many_bookmarks(self):
+        bookmarks = [
+            ('a1b2c3', 'http://www.google.com'),
+            ('aaa111', 'http://github.com'),
+            ('bbb222', 'http://amazon.com')
+        ]
+        # Register an account
+        self.user_register()
+        # Create bookmarks
+        for b in bookmarks:
+            self.add_bookmark(*b)
+        # Check that all bookmarks visible on homepage
+        rv = self.app.get('/')
+        for b in bookmarks:
+            assert (b[0].encode('utf-8') in rv.data)
+            assert (b[1].encode('utf-8') in rv.data)
+
     def test_add_bookmark_redirects(self):
         b_id = 'a1b2c3'
         # Google redirects to www
-        link = 'http://google.com/'
+        link = 'http://google.com'
         r_link = 'http://www.google.com/'
         # Register an account
         self.user_register()
