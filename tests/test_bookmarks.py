@@ -190,17 +190,23 @@ class BookmarksTestCase(unittest.TestCase):
         bookmarks = [
             'http://www.google.com',
             'http://github.com',
-            'http://amazon.com'
+            'http://amazon.com',
+            'http://stackoverflow.com',
+            'http://apple.com',
+            'http://udacity.com'
         ]
         # Register an account
         self.user_register()
         # Create bookmarks
         for b in bookmarks:
             self.add_bookmark(b)
-        # Check that all bookmarks visible on homepage
+        # Check that only 5 bookmarks visible on homepage
         rv = self.app.get('/')
-        for b in bookmarks:
+        for i in range(5):
+            b = bookmarks[i]
             assert (b.encode('utf-8') in rv.data)
+        # Check that final bookmark not on homepage
+        assert (bookmarks[5].encode('utf-8') not in rv.data)
 
     def test_add_bookmark_redirects(self):
         # Google redirects to www
