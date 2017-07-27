@@ -42,7 +42,7 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET'])
 def front_page():
-    bookmarks = Bookmark.query.all()
+    bookmarks = Bookmark.query.order_by(Bookmark.hits.desc()).limit(5).all()
     return render_template('front_page.html', bookmarks=bookmarks)
 
 
