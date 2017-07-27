@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, BigInteger, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
+
 from bookmarks.database import Base
 
 

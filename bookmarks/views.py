@@ -1,12 +1,14 @@
 import random
-import string
 import requests
-from bookmarks import app, bcrypt, login_manager
+import string
+
 from flask import flash, render_template, request, redirect, url_for, abort
-from bookmarks.database import db_session
-from bookmarks.models import User, Bookmark
 import flask_login
+
+from bookmarks import app, bcrypt, login_manager
+from bookmarks.database import db_session
 from bookmarks.forms import BookmarkForm, RegisterForm, LoginForm
+from bookmarks.models import User, Bookmark
 
 # Create user agent for requests
 USER_AGENT = '{}/{}'.format(

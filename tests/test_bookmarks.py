@@ -1,7 +1,8 @@
-import bookmarks
-import unittest
 import os
 import re
+import unittest
+
+import bookmarks
 
 
 class BookmarksTestCase(unittest.TestCase):
