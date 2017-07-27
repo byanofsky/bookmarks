@@ -1,6 +1,7 @@
 import bookmarks
 import unittest
 import os
+import re
 
 
 class BookmarksTestCase(unittest.TestCase):
@@ -65,9 +66,8 @@ class BookmarksTestCase(unittest.TestCase):
         rv = self.logout()
         assert (b'Successfully logged out' in rv.data)
 
-    def add_bookmark(self, b_id, link, follow_redirects=False):
+    def add_bookmark(self, link, follow_redirects=False):
         return self.app.post('/add_bookmark/', data=dict(
-            b_id=b_id,
             link=link,
             follow_redirects='y' if follow_redirects else None
         ), follow_redirects=True)
@@ -169,16 +169,17 @@ class BookmarksTestCase(unittest.TestCase):
         self.user_login()
 
     def test_add_bookmark(self):
-        b_id = 'a1b2c3'
         link = 'http://google.com/'
         # Register an account
         self.user_register()
         # Attempt to add bookmark
-        rv = self.add_bookmark(b_id, link)
-        msg = 'Successfully added {} {}'.format(b_id, link)
-        assert (msg.encode('utf-8') in rv.data)
-        # Check that b_id redirects to link
-        rv = self.app.get('/' + b_id)
+        rv = self.add_bookmark(link)
+        assert (b'Successfully added' in rv.data)
+        assert (link.encode('utf-8') in rv.data)
+        m = re.search(b'(?<=Successfully added ).{6}', rv.data)
+        b_id = m.group(0)
+        # # Check that b_id redirects to link
+        rv = self.app.get('/' + b_id.decode())
         assert rv.headers['Location'] == link
         # Visit a bookmark that does not exist
         rv = self.app.get('/fake12')
@@ -186,58 +187,54 @@ class BookmarksTestCase(unittest.TestCase):
 
     def test_add_many_bookmarks(self):
         bookmarks = [
-            ('a1b2c3', 'http://www.google.com'),
-            ('aaa111', 'http://github.com'),
-            ('bbb222', 'http://amazon.com')
+            'http://www.google.com',
+            'http://github.com',
+            'http://amazon.com'
         ]
         # Register an account
         self.user_register()
         # Create bookmarks
         for b in bookmarks:
-            self.add_bookmark(*b)
+            self.add_bookmark(b)
         # Check that all bookmarks visible on homepage
         rv = self.app.get('/')
         for b in bookmarks:
-            assert (b[0].encode('utf-8') in rv.data)
-            assert (b[1].encode('utf-8') in rv.data)
+            assert (b.encode('utf-8') in rv.data)
 
     def test_add_bookmark_redirects(self):
-        b_id = 'a1b2c3'
         # Google redirects to www
         link = 'http://google.com'
         r_link = 'http://www.google.com/'
         # Register an account
         self.user_register()
         # Add link and follow redirect
-        rv = self.add_bookmark(b_id, link, follow_redirects=True)
-        msg = 'Successfully added {} {}'.format(b_id, r_link)
-        assert (msg.encode('utf-8') in rv.data)
+        rv = self.add_bookmark(link, follow_redirects=True)
+        assert (b'Successfully added' in rv.data)
+        assert (r_link.encode('utf-8') in rv.data)
         # Check that id leads to r_link
-        rv = self.app.get('/' + b_id)
+        m = re.search(b'(?<=Successfully added ).{6}', rv.data)
+        b_id = m.group(0)
+        rv = self.app.get('/' + b_id.decode())
         assert rv.headers['Location'] == r_link
 
     def test_add_bookmark_validation(self):
         # Register an account
         self.user_register()
         # Attempt to add bookmark
-        rv = self.add_bookmark(b_id='123', link='www.google.com/')
-        assert b'Bookmark ID must be 6 characters long' in rv.data
+        rv = self.add_bookmark(link='www.google.com/')
         assert b'Link must be a properly formatted URL' in rv.data
-        rv = self.add_bookmark(b_id='123&&&', link='www.google.com/')
-        assert b'Can only include lowercase letters and digits' in rv.data
 
     def test_add_bookmark_errors(self):
-        b_id = 'a1b2c3'
         # Register an account
         self.user_register()
         # Add a bookmark with a 400 error
-        rv = self.add_bookmark(b_id, 'http://www.google.com/404')
+        rv = self.add_bookmark('http://www.google.com/404')
         assert b'Please check your link. It leads to this error:' in rv.data
         # Add bookmark with a connection error
-        rv = self.add_bookmark(b_id, 'http://fakewebsitegoogle.com')
+        rv = self.add_bookmark('http://fakewebsitegoogle.com')
         assert b'Could not connect to your link. Please check URL.' in rv.data
         # Simulate a timeout error
-        rv = self.add_bookmark(b_id, 'http://github.com:81')
+        rv = self.add_bookmark('http://github.com:81')
         assert b'There was a timeout error. Please check URL.' in rv.data
 
 

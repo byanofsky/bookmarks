@@ -5,6 +5,14 @@ from wtforms.validators import (DataRequired, Length, EqualTo, Email, Regexp,
 
 
 class BookmarkForm(FlaskForm):
+    link = StringField('Link', [
+        DataRequired(),
+        URL(message='Link must be a properly formatted URL')
+    ])
+    follow_redirects = BooleanField('Follow Redirects?')
+
+
+class BookmarkFormCustomID(FlaskForm):
     b_id = StringField('Bookmark ID', [
         Length(min=6,
                max=6,

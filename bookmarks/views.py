@@ -47,11 +47,8 @@ def front_page():
 @app.route('/add_bookmark/', methods=['GET', 'POST'])
 @flask_login.login_required
 def add_bookmark():
-    # Generate a possible id
-    b_id = hex_gen()
-    form = BookmarkForm(b_id=b_id)
+    form = BookmarkForm()
     if form.validate_on_submit() and request.method == 'POST':
-        b_id = form.b_id.data
         link = form.link.data
         # T/F for following link redirects
         follow_redirects = form.follow_redirects.data
@@ -82,6 +79,12 @@ def add_bookmark():
                   category='error')
         # No errors when requesting link, so add to database
         else:
+            # Generate a possible id
+            b_id = hex_gen()
+            # If it exists, keep regenerating
+            while (Bookmark.query.filter(Bookmark.id == b_id).one_or_none()
+                    is not None):
+                b_id = hex_gen()
             url = r.url  # Get final url (from redirects)
             b = Bookmark(b_id, link=url, user_id=flask_login.current_user.id)
             db_session.add(b)
@@ -89,10 +92,7 @@ def add_bookmark():
             flash('Successfully added {} {}'.format(b_id, url),
                   category='info')
             return redirect(url_for('add_bookmark'), 303)
-    # If it exists, keep regenerating
-    while Bookmark.query.filter(Bookmark.id == b_id).first() is not None:
-        b_id = hex_gen()
-    return render_template('add_bookmark.html', form=form, b_id=b_id)
+    return render_template('add_bookmark.html', form=form)
 
 
 @app.route('/register_user/', methods=['GET', 'POST'])

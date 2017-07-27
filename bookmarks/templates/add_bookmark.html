@@ -3,7 +3,6 @@
 {% block body %}
   <form action="" method="post">
     {{ form.csrf_token }}
-    {{ render_field(form.b_id) }}
     {{ render_field(form.link) }}
     {{ render_field(form.follow_redirects) }}
     <input type="submit" value="Submit">
