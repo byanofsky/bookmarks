@@ -52,9 +52,9 @@ def front_page():
 def add_bookmark():
     form = BookmarkForm(link='http://')
     if form.validate_on_submit() and request.method == 'POST':
+        # Get form data
         link = form.link.data
-        # T/F for following link redirects
-        follow_redirects = form.follow_redirects.data
+        follow_redirects = form.follow_redirects.data  # T/F for following link redirects
         # Test that link works, or return error to user
         try:
             r = requests.get(link, headers={'user-agent': USER_AGENT},
