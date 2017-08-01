@@ -66,6 +66,10 @@ def add_bookmark():
             flash('Please check your link. It leads to this error: {}.'
                   .format(e),
                   category='error')
+        # Missing schema
+        except requests.exceptions.MissingSchema as e:
+            flash('No schema. Did you mean http://{}'.format(link),
+                  category='error')
         # Timeout errors
         except requests.exceptions.Timeout:
             flash('There was a timeout error. Please check URL.')
