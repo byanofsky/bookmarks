@@ -177,10 +177,14 @@ class BookmarksTestCase(unittest.TestCase):
         rv = self.add_bookmark(link)
         assert (b'Successfully added' in rv.data)
         assert (link.encode('utf-8') in rv.data)
-        m = re.search(b'(?<=Successfully added ).{6}', rv.data)
-        b_id = m.group(0)
+        m = re.search(
+            r'Your short link is <a [^>]+>https?://[^/]+/' +
+            r'(?P<b_id>[a-z0-9]{6})</a>',
+            str(rv.data, encoding='utf-8')
+        )
+        b_id = m.group('b_id')
         # # Check that b_id redirects to link
-        rv = self.app.get('/' + b_id.decode())
+        rv = self.app.get('/' + b_id)
         assert rv.headers['Location'] == link
         # Visit a bookmark that does not exist
         rv = self.app.get('/fake12')
@@ -219,9 +223,13 @@ class BookmarksTestCase(unittest.TestCase):
         assert (b'Successfully added' in rv.data)
         assert (r_link.encode('utf-8') in rv.data)
         # Check that id leads to r_link
-        m = re.search(b'(?<=Successfully added ).{6}', rv.data)
-        b_id = m.group(0)
-        rv = self.app.get('/' + b_id.decode())
+        m = re.search(
+            r'Your short link is <a [^>]+>https?://[^/]+/' +
+            r'(?P<b_id>[a-z0-9]{6})</a>',
+            str(rv.data, encoding='utf-8')
+        )
+        b_id = m.group('b_id')
+        rv = self.app.get('/' + b_id)
         assert rv.headers['Location'] == r_link
 
     def test_add_bookmark_validation(self):
