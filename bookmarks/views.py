@@ -50,7 +50,7 @@ def front_page():
 @app.route('/add_bookmark/', methods=['GET', 'POST'])
 @flask_login.login_required
 def add_bookmark():
-    form = BookmarkForm()
+    form = BookmarkForm(link='http://')
     if form.validate_on_submit() and request.method == 'POST':
         link = form.link.data
         # T/F for following link redirects
