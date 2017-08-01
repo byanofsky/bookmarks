@@ -2,7 +2,8 @@ import random
 import requests
 import string
 
-from flask import flash, render_template, request, redirect, url_for, abort
+from flask import (flash, render_template, request, redirect, url_for, abort,
+                   Markup)
 import flask_login
 
 from bookmarks import app, bcrypt, login_manager
@@ -88,11 +89,14 @@ def add_bookmark():
                     is not None):
                 b_id = hex_gen()
             url = r.url  # Get final url (from redirects)
+            url_root = request.url_root
             b = Bookmark(b_id, link=url, user_id=flask_login.current_user.id)
             db_session.add(b)
             db_session.commit()
-            flash('Successfully added {} {}'.format(b_id, url),
-                  category='info')
+            msg_uf = ('Successfully added {0}. Your short link is ' +
+                      '<a target="_blank" href="{1}">{1}</a>.')
+            msg = msg_uf.format(url, url_root+b_id)
+            flash(Markup(msg), category='info')
             return redirect(url_for('add_bookmark'), 303)
     return render_template('add_bookmark.html', form=form)
 
