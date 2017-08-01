@@ -237,7 +237,7 @@ class BookmarksTestCase(unittest.TestCase):
         self.user_register()
         # Attempt to add bookmark
         rv = self.add_bookmark(link='www.google.com/')
-        assert b'Link must be a properly formatted URL' in rv.data
+        assert b'No schema. Did you mean http://www.google.com/' in rv.data
 
     def test_add_bookmark_errors(self):
         # Register an account
