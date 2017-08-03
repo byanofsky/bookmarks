@@ -1,0 +1,20 @@
+{
+  "name": "bookmarks",
+  "homepage": "https://github.com/byanofsky/bookmarks",
+  "authors": [
+    "byanofsky <byanofsky@me.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
