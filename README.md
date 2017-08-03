@@ -1,9 +1,10 @@
 # bookmarks
-A bookmarking and link shortening service.
+
+A bookmarking and link shortening software.
 
 ## What It Does
 
-Bookmarks allows users to save URLs to shortened links.
+Allows users to save URLs to shortened links.
 
 An authentication system allows users to register accounts and save bookmarks to their accounts.
 
@@ -29,37 +30,58 @@ Lastly, you will need a PostgreSQL database set up with a user that has access t
 
 1. Duplicate `default_settings.py` to a new directory called `instance` that should live at the same level as `setup.py`. Call this duplicated file `settings.py`.
 
-2. Update `settings.py` with your own settings, such as `DATABASE_USERNAME`, `DATABASE_PASSWORD`, etc.
+2. Update `settings.py` with your own settings. You'll see settings that should be changed are marked with `TODO`.
 
-3. For `SECRET_KEY`, the recommended way to generate a secret key is:
+3. Most importantly, you should change the `DATABASE_URI` for each environment's database. It should follow the basic structure of:
+```
+'postgresql://username:password@host/db_name'
+```
+
+4. For `SECRET_KEY`, the recommended way to generate a secret key is to run this in Python:
 ```
 >>> import os
 >>> os.urandom(24)
 '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
 ```
 
-4. Install the bookmarks package. The `-e` install it in editable mode.
+5. Install the bookmarks package. The `-e` installs it in editable mode.
 ```
 pip install -e .
 ```
 
-5. Create database schema by running in python:
+6. Set your environment variables:
+```
+export FLASK_APP=bookmarks
+export FLASK_DEBUG=1
+export APPLICATION_ENVIRONMENT='development'
+```
+The final environment variable needs to match with your environment: `'production'`, `'development'`, or `'testing'`. If none is set, `'development'` is used by default.
+
+7. Create database schema by running in python:
 ```
 >>> from bookmarks.database import init_db
 >>> init_db()
 ```
+If you are using multiple application environments, you will need to change your `APPLICATION_ENVIRONMENT` variable and run this for each.
 
-6. Start the Flask development server with:
+8. Start the Flask development server with:
 ```
-export FLASK_APP=bookmarks
-export FLASK_DEBUG=1
 flask run
 ```
 If you are running on a Vagrant machine, you will need to append ` -h 0.0.0.0` to run so it is publicly accessible. [More info here](http://flask.pocoo.org/docs/0.12/quickstart/#public-server).
 
 ## Running Tests
 
-Coming Soon!
+I've included a testing module which you can use to test all functionality. It uses the Python unittest library.
+
+You must set '`APPLICATION_ENVIRONMENT`' to `'testing'` for the tests to run. This is to protect against making changes to dev and production databases.
+
+To run the tests, from the root of the application, run:
+```
+python tests/test_bookmarks.py
+```
+
+Because the tests will make requests to external websites, you will need an internet connection. And it can sometimes take a little while to run since it is making requests to other websites.
 
 ## Deployment
 
