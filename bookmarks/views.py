@@ -65,25 +65,28 @@ def add_bookmark():
         except requests.exceptions.HTTPError as e:
             flash('Please check your link. It leads to this error: {}.'
                   .format(e),
-                  category='error')
+                  category='danger')
         # Missing schema
         except requests.exceptions.MissingSchema as e:
             flash('No schema. Did you mean http://{}?'.format(link),
-                  category='error')
+                  category='danger')
         # Timeout errors
         except requests.exceptions.Timeout:
-            flash('There was a timeout error. Please check URL.')
+            flash('There was a timeout error. Please check URL.',
+                  category='danger')
         # Connection errors
         except requests.exceptions.ConnectionError:
-            flash('Could not connect to your link. Please check URL.')
+            flash('Could not connect to your link. Please check URL.',
+                  category='danger')
         # Too many redirects
         except requests.exceptions.TooManyRedirects:
-            flash('Exceeded max number of redirects. Please check URL.')
+            flash('Exceeded max number of redirects. Please check URL.',
+                  category='danger')
         # All other requests-related exceptions
         except requests.exceptions.RequestException as e:
             flash('Please check your link. It leads to this error: {}.'
                   .format(e),
-                  category='error')
+                  category='danger')
         # No errors when requesting link, so add to database
         else:
             # Generate a possible id
@@ -100,7 +103,7 @@ def add_bookmark():
             msg_uf = ('Successfully added {0}. Your short link is ' +
                       '<a target="_blank" href="{1}">{1}</a>.')
             msg = msg_uf.format(url, url_root+b_id)
-            flash(Markup(msg), category='info')
+            flash(Markup(msg), category='success')
             return redirect(url_for('add_bookmark'), 303)
     return render_template('add_bookmark.html', form=form)
 
@@ -118,18 +121,18 @@ def register_user():
             errors['username_exists'] = True
             flash(
                 'A user already exists with the username {}'.format(username),
-                category='error')
+                category='danger')
         if User.query.filter(User.email == email).one_or_none() is not None:
             errors['email_exists'] = True
             flash('A user already exists with the email {}'.format(email),
-                  category='error')
+                  category='danger')
         if not errors:
             pw_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
             u = User(username, name, email, pw_hash)
             db_session.add(u)
             db_session.commit()
             flash('Successfully registered {} {} {}'.format(username, name, email),
-                  category='info')
+                  category='success')
             user = flask_login.UserMixin()
             user.id = u.id
             flask_login.login_user(user)
@@ -154,7 +157,7 @@ def login_user():
                 user.id = u.id
                 flask_login.login_user(user)
                 flash('Successfully logged in {}'.format(username),
-                      category='info')
+                      category='success')
                 return redirect(url_for('front_page'), 303)
             # Password is not correct, flash message
             else:
@@ -170,7 +173,7 @@ def logout_user():
     if request.method == 'POST':
         flask_login.logout_user()
         flash('Successfully logged out',
-              category='info')
+              category='success')
         return redirect(url_for('front_page'), 303)
     else:
         return render_template('logout_user.html')
