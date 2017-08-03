@@ -1,5 +1,27 @@
 {% extends "layout.html" %}
 {% block body %}
+  <div class="jumbotron">
+    <h1>Welcome to bookmarks!</h1>
+    <p>
+      This is a simple bookmarking and link shortening software,
+      built with Python, Flask, Bootstrap, and a few other libraries.
+    </p>
+    <p>
+      I built this as a learning excercise, expanding upon what I learned in
+      Udacity's course "HTTP and Web Servers".
+    </p>
+    <p>
+      - Brandon Yanofsky
+    </p>
+    <p>
+      <a class="btn btn-primary btn-lg" href="https://byanofsky.com" role="button" target="_blank">
+        Learn About Me
+      </a>
+      <a class="btn btn-primary btn-lg" href="https://github.com/byanofsky/bookmarks" role="button" target="_blank">
+        View On GitHub
+      </a>
+    </p>
+  </div>
   {% if bookmarks %}
   <ul>
     {% for b in bookmarks %}
