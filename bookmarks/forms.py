@@ -48,7 +48,7 @@ class RegisterForm(FlaskForm):
     confirm = PasswordField('Repeat Password', [
         EqualTo('password', message='You must confirm your password')
     ])
-    accept_tos = BooleanField('I accept the TOS')
+    # accept_tos = BooleanField('I accept the TOS')
 
 
 class LoginForm(FlaskForm):
