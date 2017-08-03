@@ -102,3 +102,9 @@ ENV/
 
 # Vagrant stuff
 .vagrant
+
+# Grunt stuff
+node_modules/
+
+# Bower
+bower_components/
