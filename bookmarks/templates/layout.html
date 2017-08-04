@@ -29,20 +29,26 @@
           <a class="navbar-brand" href="{{ url_for('front_page') }}">bookmarks</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse navbar-right">
-          <ul class="nav navbar-nav">
-            <li><a href="{{ url_for('front_page') }}">Home</a></li>
-            <li><a href="{{ url_for('register_user') }}">Register</a></li>
-            <li><a href="{{ url_for('login_user') }}">Login</a></li>
-            <li><a href="{{ url_for('logout_user') }}">Logout</a></li>
-            <li><a href="{{ url_for('add_bookmark') }}">Create</a></li>
-          </ul>
-          <p class="navbar-text navbar-right">
-            {% if current_user.is_authenticated %}
-              Welcome, {{ current_user.name }}
-            {% else %}
-              You are not currently logged in
-            {% endif %}
-          </p>
+          {% if current_user.is_authenticated %}
+            <ul class="nav navbar-nav">
+              <li><a href="{{ url_for('add_bookmark') }}">Add Bookmark</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    Welcome, {{ current_user.name }}
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Your Bookmarks</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{{ url_for('logout_user') }}">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+          {% else %}
+            <p class="navbar-text">You are not currently logged in</p>
+            <a href="{{ url_for('register_user') }}" class="btn btn-default navbar-btn" role="button">Register</a>
+            <a href="{{ url_for('login_user') }}" class="btn btn-default navbar-btn" role="button">Login</a>
+          {% endif %}
         </div><!--/.nav-collapse -->
       </div>
     </nav>
