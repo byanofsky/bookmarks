@@ -23,14 +23,24 @@
     </p>
   </div>
   {% if bookmarks %}
-  <ul>
+  <h2>Most Visited Bookmarks</h2>
+  <ul class="list-group">
     {% for b in bookmarks %}
-    <li>
-      <a href="{{ url_for('front_page') }}{{ b.id }}"
-         target="_blank">{{ request.url_root }}{{ b.id }}</a>
-      | URL: {{ b.link }}
-      | Hits: {{ b.hits }}
-      | Added by: {{ b.user.username }}
+    <li class="list-group-item">
+      <div>
+          <p>
+            <strong>ID:</strong> {{ b.id }}
+            |
+            <strong>URL:</strong> {{ b.link }}
+            |
+            <strong>Hits:</strong> {{ b.hits }}
+            |
+            <strong>Added by:</strong> {{ b.user.username }}
+        </p>
+          <a href="{{ url_for('front_page') }}{{ b.id }}" class="btn btn-primary" role="button" target="_blank">
+            Visit
+          </a>
+      </div>
     </li>
     {% endfor %}
   </ul>
