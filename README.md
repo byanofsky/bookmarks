@@ -2,6 +2,8 @@
 
 A bookmarking and link shortening software.
 
+You can see a fully functioning example here: https://bay-bookmarks.herokuapp.com
+
 ## What It Does
 
 Allows users to save URLs to shortened links.
